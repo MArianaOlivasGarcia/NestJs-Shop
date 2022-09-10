@@ -1,8 +1,10 @@
-import { BeforeInsert, BeforeUpdate, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { User } from "../../auth/entities/user.entity";
+import { BeforeInsert, BeforeUpdate, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { ProductImage } from "./product-image.entity";
 
 
 
-@Entity()
+@Entity({ name: 'products' })
 export class Product {
 
     @PrimaryGeneratedColumn('uuid')
@@ -55,6 +57,27 @@ export class Product {
         default: []
     })
     tags: string[]
+
+    // Un producto tiene muchas imagenes
+    @OneToMany(
+        () => ProductImage, // regresara un ProductImage
+        ( productImage ) => productImage.product,
+        {
+            cascade: true,
+            eager: true // Cada que usemos algún metodo find* se haran las relaciones y obtendremos la data automaticamente
+        }
+    )
+    images?: ProductImage[]
+
+
+
+
+    @ManyToOne(
+        () => User,
+        ( user ) => user.products,
+        { onDelete: 'CASCADE' }
+    )
+    user: User
 
 
 

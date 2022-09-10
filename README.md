@@ -19,5 +19,6 @@
 docker-compose up -d
 ```
 
+6. Hacer peticion ```GET``` a ```http://localhost:3000/api/seed```
 
-6. Ejecutar el comando ```yarn start:dev```
+7. Ejecutar el comando ```yarn start:dev``` para levantar el servidor.
