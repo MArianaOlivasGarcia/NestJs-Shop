@@ -1,11 +1,10 @@
-import { IsEmail, IsString, Matches, MaxLength, Min, MinLength } from "class-validator";
+import { IsString, Matches, MaxLength, Min, MinLength } from "class-validator";
 
 
-export class LoginUserDto {
+export class  LoginUserDto {
 
     @IsString()
-    @IsEmail()
-    email: string;
+    userName: string;
 
 
     @IsString()

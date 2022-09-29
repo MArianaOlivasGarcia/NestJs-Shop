@@ -12,7 +12,7 @@ export class User {
     @Column('text', {
         unique: true
     })
-    email: string;
+    userName: string;
 
     @Column('text', {
         select: false
@@ -34,12 +34,18 @@ export class User {
     roles: string[];
 
 
+    @Column('bool',{
+        default: false
+    })
+    isOnline?: boolean
+
+
     @OneToMany(
-        () => Product, // regresara un ProductImage
+        () => Product, 
         ( product ) => product.user,
         {
             cascade: true,
-            eager: true // Cada que usemos algún metodo find* se haran las relaciones y obtendremos la data automaticamente
+            eager: true 
         }
     )
     products?: Product[]
@@ -49,12 +55,12 @@ export class User {
 
     @BeforeInsert()
     checkFieldsBeforeInsert() {
-        this.email = this.email.trim().toLowerCase();
+        this.userName = this.userName.trim().toLowerCase();
     }
 
     @BeforeUpdate()
     checkFieldsBeforeUpdate() {
-        this.email = this.email.trim().toLowerCase();
+        this.userName = this.userName.trim().toLowerCase();
     }
 
 }

@@ -3,6 +3,8 @@ import { Socket } from 'socket.io';
 import { User } from '../auth/entities/user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { NewMessageDto } from './dto/new-message.dto';
+import { Message } from './entities/message.entity';
 
 interface ConnectedClients {
     [id: string]: {
@@ -15,10 +17,12 @@ interface ConnectedClients {
 @Injectable()
 export class MessagesWsService {
 
-    constructor( @InjectRepository( User ) private readonly userRepository: Repository<User>){}
+    constructor( @InjectRepository( User ) private readonly userRepository: Repository<User>, 
+                 @InjectRepository( Message ) private readonly messageRepository: Repository<Message> ){}
 
     private connectedClients: ConnectedClients = {}
 
+    
 
    async registerClient( client: Socket, userId: string ) {
 
@@ -62,6 +66,20 @@ export class MessagesWsService {
                 break;
             }
         }
+
+    }
+
+
+
+    async saveMessage( newMessageDto: NewMessageDto, userId: string ) {
+
+        const { message, from } = newMessageDto;
+
+        const user = await this.userRepository.findOneBy({id: from});
+
+        const messageDb = this.messageRepository.create({ message, user_from: user });
+
+        await this.messageRepository.save( messageDb );
 
     }
 

@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, InternalServerErrorException, Logger, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs'
@@ -6,6 +6,7 @@ import { User } from './entities/user.entity';
 import { LoginUserDto, CreateUserDto } from './dto';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
 import { JwtService } from '@nestjs/jwt';
+import { PaginationDto } from '../common/dto/pagination.dto';
 
 @Injectable()
 export class AuthService {
@@ -34,6 +35,7 @@ export class AuthService {
       delete user.password;
 
       return {
+        status: true,
         user,
         accessToken: this.getJwtToken( {id: user.id} )
       };
@@ -48,11 +50,12 @@ export class AuthService {
 
   async login( loginUserDto: LoginUserDto ) {
 
-    const { password, email } = loginUserDto;
+
+    const { password, userName } = loginUserDto;
 
     const user = await this.userRepository.findOne({ 
-      where: { email },
-      select: { email: true, password: true, id: true }
+      where: { userName },
+      select: { userName: true, password: true, id: true }
     });
 
 
@@ -65,6 +68,7 @@ export class AuthService {
     }
 
     return {
+      status: true,
       user,
       accessToken: this.getJwtToken( {id: user.id} )
     };
@@ -78,6 +82,7 @@ export class AuthService {
     if ( !user ) throw new UnauthorizedException(`Unauthorized`)
 
     return {
+      status: true,
       user,
       accessToken: this.getJwtToken( {id: user.id} )
     };
@@ -97,11 +102,28 @@ export class AuthService {
 
   private handleExceptions( error: any ) {
     if ( error.code === '23505' ) {
-      throw new BadRequestException(`${ error.detail }`)
+      throw new BadRequestException({ status:false, message: error.detail })
     }
 
     this.logger.error(error)
     throw new InternalServerErrorException(`Unexpected error, check server logs.`)
+  }
+
+
+  async findAll( paginationDto: PaginationDto ) {
+
+    const { limit = 20, page = 1 } = paginationDto;
+
+    const [ results, totalResults ] = await Promise.all([
+      this.userRepository.find({
+        take: limit,
+        skip: ( page - 1 ) * limit,
+      }),
+      this.userRepository.count()
+    ])
+
+    return { results, totalResults }
+
   }
 
 }

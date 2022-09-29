@@ -1,5 +1,6 @@
-import { Controller, Get, Post, Body, UseGuards, Req, SetMetadata } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards, Req, SetMetadata, Query } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { PaginationDto } from '../common/dto/pagination.dto';
 import { AuthService } from './auth.service';
 import { Auth, GetUser, RoleProtected } from './decorators';
 import { CreateUserDto, LoginUserDto } from './dto';
@@ -9,8 +10,10 @@ import { ValidRoles } from './interfaces';
 
 @Controller('auth')
 export class AuthController {
+
   constructor(private readonly authService: AuthService) {}
 
+  
   @Post('register')
   create(@Body() createUserDto: CreateUserDto) {
     return this.authService.register(createUserDto);
@@ -42,7 +45,7 @@ export class AuthController {
   // Añadir algo a la metadata
   // @SetMetadata('roles', ['admin', 'super-admin'])
   // Cramos un decorador para añadir datos a la metadata
-  @RoleProtected( ValidRoles.sudo )
+  @RoleProtected( ValidRoles.admin )
   // Ruta privada, nuestros guards personalizados no lleva ()
   @UseGuards( AuthGuard(), UserRoleGuard )
   private( @GetUser() user: User ) {
@@ -53,11 +56,20 @@ export class AuthController {
 
   @Get('private2')
   // @Auth( ValidRoles.sudo, ValidRoles.admin )
-  @Auth( ValidRoles.sudo )
+  @Auth( ValidRoles.admin )
   // @Auth( ) Sin protección
   private2( @GetUser() user: User ) {
     console.log(user)
   }
+
+
+
+
+  @Get('users')
+  findAll( @Query() paginationDto: PaginationDto ) {
+    return this.authService.findAll( paginationDto );
+  }
+
 
 
 

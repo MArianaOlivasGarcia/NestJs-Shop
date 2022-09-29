@@ -1,9 +1,13 @@
-import { IsString, MinLength } from "class-validator";
+import { IsString, IsUUID, MinLength } from "class-validator";
 
 
 
 
 export class NewMessageDto {
+
+    @IsString()
+    @IsUUID()
+    from: string
 
     @IsString()
     @MinLength(1)

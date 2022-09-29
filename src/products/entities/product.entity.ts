@@ -42,14 +42,14 @@ export class Product {
     
 
 
-    @Column('text', {
-        array: true
-    })
-    sizes: string[];
+    // @Column('text', {
+    //     array: true
+    // })
+    // sizes: string[];
 
 
-    @Column('text')
-    gender: string;
+    // @Column('text')
+    // gender: string;
 
 
     @Column('text', {

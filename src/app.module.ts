@@ -7,6 +7,7 @@ import { SeedModule } from './seed/seed.module';
 import { FilesModule } from './files/files.module';
 import { AuthModule } from './auth/auth.module';
 import { MessagesWsModule } from './messages-ws/messages-ws.module';
+import { CraftsmanModule } from './craftsman/craftsman.module';
 
 @Module({
   imports: [
@@ -35,7 +36,10 @@ import { MessagesWsModule } from './messages-ws/messages-ws.module';
 
     AuthModule,
 
-    MessagesWsModule
+    MessagesWsModule,
+
+    CraftsmanModule,
+
   ],
   controllers: [
 

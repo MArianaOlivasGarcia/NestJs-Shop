@@ -52,11 +52,11 @@ export class ProductsService {
 
   async findAll( paginationDto: PaginationDto ) {
 
-    const { limit = 20, offset = 0 } = paginationDto;
+    const { limit = 20, page = 1 } = paginationDto;
 
     const producs = await this.productRepository.find({
       take: limit,
-      skip: offset,
+      skip: ( page - 1 ) * limit,
       // Especificar que si haga la relación para traerme la data
       relations: {
         images: true,

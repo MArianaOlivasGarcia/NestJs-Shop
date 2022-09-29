@@ -38,6 +38,8 @@ import { JwtStrategy } from './strategies/jwt.strategy';
         }
       }
     })
+
+    
   ],
   exports: [
     TypeOrmModule,
