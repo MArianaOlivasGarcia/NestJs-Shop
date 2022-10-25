@@ -57,17 +57,47 @@ export class MessagesWsGateway implements OnGatewayConnection, OnGatewayDisconne
 
   }
 
+  
 
   // Escuchar eventos desde el client recibe el nombre del evento
   @SubscribeMessage('messageClient')
   async onMessageClient( client: Socket, payload: NewMessageDto ) {
+  
+  
+    if(payload.message.includes('requisicion')){
 
-    // switch ( payload.message.trim().toLowerCase() ) {
+        if(containsNumbers(payload.message)){
+          client.emit('messageResponse', { fullName: 'Marianito', type: 'text', message: 'NUMERO'});
+          return;
+        }
+
+        //find all reqs with id
+    
+    }else if(payload.message.includes('artesano')){
+
+      //return all craftsmen related (names)
+      
+    }else if(payload.message.includes('info de')){
+      var nombre = payload.message.split(" ");
+      //LOOK UP NAMES
+      
+    }else if(payload.message.includes('hoy')){
+      //LOOK UP: REQUISICIONES DUE, INSTALLMENTS DUE, PEDIDO DUE TODAY
+      
+    }else if(payload.message.includes('')){
+      
+    }else if(payload.message.includes('')){
+      
+    }
+
 
      console.log(payload)
       if ( payload.message.trim() == '' ) {
         return;
       }
+
+
+      
 
         //* CHATBOT
         const [ responseBot] = await Promise.all([
@@ -92,6 +122,11 @@ export class MessagesWsGateway implements OnGatewayConnection, OnGatewayDisconne
 
     //! Emitir a una sala
     // this.webSocketServer.to('nombreSala').emit('messagesFromServer', { fullName: 'Servidor', message: 'Hay un nuevo mensaje' })
+    
+    function containsNumbers(str) {
+      return /\d/.test(str);
+    }
+  
   }
 
 
